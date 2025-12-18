@@ -22,6 +22,7 @@ RW4_POS = [0 -0.5 0]';%XYZ [m]
 %%
 % THR.info : https://satsearch.co/products/ecaps-22n-hpgp-thruster?utm_source=chatgpt.com
 RCS_Facealpha = 1.0;
+
 % % % % % % +Z Size % % % % % % % % %
 RCS1_ROT = [0 90 0]';%ZYX [deg]
 RCS2_ROT = [0 -90 0]';%ZYX [deg]
@@ -37,6 +38,7 @@ RCS1_THR = [-1 0 0]';
 RCS2_THR = [1 0 0]';
 RCS3_THR = [0 -1 0]';
 RCS4_THR = [0 1 0]';
+
 %% 
 % % % % % % -Z Size % % % % % % % % %
 RCS5_ROT = [0 90 0]';%ZYX [deg]
@@ -53,31 +55,51 @@ RCS5_THR = [-1 0 0]';
 RCS6_THR = [1 0 0]';
 RCS7_THR = [0 -1 0]';
 RCS8_THR = [0 1 0]';
+
 %%
 % % % % % % +Y Size % % % % % % % % %
-RCS9_ROT = [0 90 0]';%ZYX [deg]
+RCS9_ROT   = [0 90 0]';%ZYX [deg]
 RCS10_ROT = [0 -90 0]';%ZYX [deg]
-RCS9_POS   = [0.2 0.85 0]';%XYZ [m]
-RCS10_POS = [-0.2 0.85 0]';%XYZ [m]
+RCS11_ROT = [0 180 0]';%ZYX [deg]
+RCS12_ROT = [0 0 0]';%ZYX [deg]
 
-RCS9_THR = [-1 0 0]';
+RCS9_POS   = [0.2 0.85 0]';%ZYX [deg]
+RCS10_POS = [-0.2 0.85 0]';%ZYX [deg]
+RCS11_POS = [0 0.85 -0.2]';%ZYX [deg]
+RCS12_POS = [0 0.85 0.2]';%ZYX [deg]
+
+RCS9_THR  = [-1 0 0]';
 RCS10_THR = [1 0 0]';
-%%
-RCS11_ROT = [0 90 0]';%ZYX [deg]
-RCS12_ROT = [0 -90 0]';%ZYX [deg]
-RCS11_POS = [0.2 -0.85 0]';%XYZ [m]
-RCS12_POS = [-0.2 -0.85 0]';%XYZ [m]
+RCS11_THR = [0 0 1]';
+RCS12_THR = [0 0 -1]';
 
-RCS11_THR = [-1 0 0]';
-RCS12_THR = [1 0 0]';
 %%
+% % % % % % -Y Size % % % % % % % % %
+RCS13_ROT = [0 90 0]';%ZYX [deg]
+RCS14_ROT = [0 -90 0]';%ZYX [deg]
+RCS15_ROT = [0 180 0]';%ZYX [deg]
+RCS16_ROT = [0 0 0]';%ZYX [deg]
 
+RCS13_POS = [0.2 -0.85 0]';%ZYX [deg]
+RCS14_POS = [-0.2 -0.85 0]';%ZYX [deg]
+RCS15_POS = [0 -0.85 -0.2]';%ZYX [deg]
+RCS16_POS = [0 -0.85 0.2]';%ZYX [deg]
+
+RCS13_THR = [-1 0 0]';
+RCS14_THR = [1 0 0]';
+RCS15_THR = [0 0 1]';
+RCS16_THR = [0 0 -1]';
+
+%%
 RCS_Pos = [RCS1_POS, RCS2_POS  ,RCS3_POS  ,RCS4_POS,...
-                 RCS5_POS, RCS6_POS  ,RCS7_POS  ,RCS8_POS,...
-                 RCS9_POS, RCS10_POS,RCS11_POS,RCS12_POS];
+                RCS5_POS, RCS6_POS  ,RCS7_POS  ,RCS8_POS,...
+                RCS9_POS, RCS10_POS,RCS11_POS,RCS12_POS,...
+                RCS13_POS, RCS14_POS,RCS15_POS,RCS16_POS];
+
 RCS_THR_vec = [RCS1_THR,RCS2_THR,RCS3_THR,RCS4_THR, ...
-                        RCS5_THR,RCS6_THR,RCS7_THR,RCS8_THR, ...
-                        RCS9_THR,RCS10_THR,RCS11_THR,RCS12_THR];
+                      RCS5_THR,RCS6_THR,RCS7_THR,RCS8_THR, ...
+                      RCS9_THR,RCS10_THR,RCS11_THR,RCS12_THR, ...
+                      RCS13_THR,RCS14_THR,RCS15_THR,RCS16_THR];
 
 
 function out = kepler6_to_orbit_rate(kep)
