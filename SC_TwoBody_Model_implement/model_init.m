@@ -5,7 +5,15 @@ clc;
 deg2rad = pi/180;
 
 dt = 0.001;
-SC_Kepler = [(6371.2+600)*1000, 0.00221, 0*pi/180, 0*pi/180, 0, 0];
+
+%		(1) - semimajor axis of the orbit in meters.
+%		(2) - eccentricity.
+%		(3) - inclinatsion in radians.
+%		(4) - right ascension of ascending node in radians.
+%		(5) - argument of perigee in radians.
+%		(6) - mean anomaly in radians.
+SC_Kepler = [(6371.2+600)*1000, 0.00221, 45*pi/180, 0*pi/180, 0, 0];
+TC_Kepler = [(6371.2+600)*1000, 0.00221, 45*pi/180, 0*pi/180, 0, 0.00001];
 
 w_orbit = kepler6_to_orbit_rate(SC_Kepler);%orbit rate : [rad/s]
 
