@@ -2,7 +2,7 @@ clear all;
 close all;
 clc;
 
-deg2rad = pi/180;
+% deg2rad = pi/180;
 
 dt = 0.001;
 
@@ -17,6 +17,14 @@ TC_Kepler = [(6371.2+600)*1000, 0.00221, 45*pi/180, 0*pi/180, 0, 0.00001];
 
 w_orbit = kepler6_to_orbit_rate(SC_Kepler);%orbit rate : [rad/s]
 
+SC_Ib = diag([1 1 1]);%[kgm^2]
+m_tot = 100;%[kg]
+Iws = diag([1 1 1 1]);
+wb0 = [0 0 0]';
+qb0 = angle2quat(deg2rad(45),deg2rad(0),deg2rad(0),'ZYX');
+vI0 = [0 0 0]';
+pI0 = [0 0 0]';
+
 %% 
 Fly_Wheel_Mass = 12;%[kg]
 % RW1
@@ -29,16 +37,21 @@ RW2_POS = [0 0.5 0]';%XYZ [m]
 RW3_POS = [-0.5 0 0]';%XYZ [m]
 RW4_POS = [0 -0.5 0]';%XYZ [m]
 
-RW1_ROTM = angle2dcm(RW1_ROT(1)*deg2rad,RW1_ROT(2)*deg2rad,RW1_ROT(3)*deg2rad,'ZYX')';
-RW2_ROTM = angle2dcm(RW2_ROT(1)*deg2rad,RW2_ROT(2)*deg2rad,RW2_ROT(3)*deg2rad,'ZYX')';
-RW3_ROTM = angle2dcm(RW3_ROT(1)*deg2rad,RW3_ROT(2)*deg2rad,RW3_ROT(3)*deg2rad,'ZYX')';
-RW4_ROTM = angle2dcm(RW4_ROT(1)*deg2rad,RW4_ROT(2)*deg2rad,RW4_ROT(3)*deg2rad,'ZYX')';
+RW1_ROTM = angle2dcm(deg2rad(RW1_ROT(1)),deg2rad(RW1_ROT(2)),deg2rad(RW1_ROT(3)),'ZYX')';
+RW2_ROTM = angle2dcm(deg2rad(RW2_ROT(1)),deg2rad(RW2_ROT(2)),deg2rad(RW2_ROT(3)),'ZYX')';
+RW3_ROTM = angle2dcm(deg2rad(RW3_ROT(1)),deg2rad(RW3_ROT(2)),deg2rad(RW3_ROT(3)),'ZYX')';
+RW4_ROTM = angle2dcm(deg2rad(RW4_ROT(1)),deg2rad(RW4_ROT(2)),deg2rad(RW4_ROT(3)),'ZYX')';
 
 RW1_Axis = RW1_ROTM(:,3);
 RW2_Axis = RW2_ROTM(:,3);
 RW3_Axis = RW3_ROTM(:,3);
 RW4_Axis = RW4_ROTM(:,3);
 RW_As = [RW1_Axis,RW2_Axis,RW3_Axis,RW4_Axis];
+
+Omega1_init = 0;
+Omega2_init = 0;
+Omega3_init = 0;
+Omega4_init = 0;
 
 %%
 % THR.info : https://satsearch.co/products/ecaps-22n-hpgp-thruster?utm_source=chatgpt.com
