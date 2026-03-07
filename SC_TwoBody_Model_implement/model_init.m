@@ -4,7 +4,7 @@ clc;
 
 % deg2rad = pi/180;
 
-dt = 0.001;
+dt = 0.01;
 
 %		(1) - semimajor axis of the orbit in meters.
 %		(2) - eccentricity.
@@ -21,7 +21,7 @@ SC_Ib = diag([1 1 1]);%[kgm^2]
 m_tot = 100;%[kg]
 Iws = diag([1 1 1 1]);
 wb0 = [0 0 0]';
-qb0 = angle2quat(deg2rad(45),deg2rad(0),deg2rad(0),'ZYX');
+qb0 = angle2quat(deg2rad(0 ),deg2rad(0),deg2rad(0),'ZYX');
 vI0 = [0 0 0]';
 pI0 = [0 0 0]';
 
@@ -54,6 +54,9 @@ Omega3_init = 0;
 Omega4_init = 0;
 
 %%
+RCS_F = 1.0;%[N]
+RCS_PWM_Freq = 0.1;%[sec]
+RCS_Sampling_time = 0.01;
 % THR.info : https://satsearch.co/products/ecaps-22n-hpgp-thruster?utm_source=chatgpt.com
 RCS_Facealpha = 1.0;
 
@@ -125,16 +128,15 @@ RCS15_THR = [0 0 1]';
 RCS16_THR = [0 0 -1]';
 
 %%
-RCS_Pos = [RCS1_POS, RCS2_POS  ,RCS3_POS  ,RCS4_POS,...
-                RCS5_POS, RCS6_POS  ,RCS7_POS  ,RCS8_POS,...
-                RCS9_POS, RCS10_POS,RCS11_POS,RCS12_POS,...
-                RCS13_POS, RCS14_POS,RCS15_POS,RCS16_POS];
+RCS_Pos = [RCS1_POS , RCS2_POS , RCS3_POS , RCS4_POS ,...
+           RCS5_POS , RCS6_POS , RCS7_POS , RCS8_POS ,...
+           RCS9_POS , RCS10_POS, RCS11_POS, RCS12_POS,...
+           RCS13_POS, RCS14_POS, RCS15_POS, RCS16_POS];
 
-RCS_THR_vec = [RCS1_THR,RCS2_THR,RCS3_THR,RCS4_THR, ...
-                      RCS5_THR,RCS6_THR,RCS7_THR,RCS8_THR, ...
-                      RCS9_THR,RCS10_THR,RCS11_THR,RCS12_THR, ...
-                      RCS13_THR,RCS14_THR,RCS15_THR,RCS16_THR];
-
+RCS_THR_vec = [RCS1_THR , RCS2_THR , RCS3_THR , RCS4_THR, ...
+               RCS5_THR , RCS6_THR , RCS7_THR , RCS8_THR, ...
+               RCS9_THR , RCS10_THR, RCS11_THR, RCS12_THR, ...
+               RCS13_THR, RCS14_THR, RCS15_THR, RCS16_THR];
 
 function out = kepler6_to_orbit_rate(kep)
 %KEPLER6_TO_ORBIT_RATE  Kepler 6요소 -> orbit rate(mean motion) 반환
