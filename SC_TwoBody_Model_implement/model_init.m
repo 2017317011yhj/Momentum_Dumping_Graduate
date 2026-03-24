@@ -3,7 +3,8 @@ close all;
 clc;
 
 % deg2rad = pi/180;
-
+rpm2rad = (2*pi)/60;
+rad2rpm = 1/rpm2rad;
 dt = 0.01;
 
 %		(1) - semimajor axis of the orbit in meters.
@@ -12,22 +13,27 @@ dt = 0.01;
 %		(4) - right ascension of ascending node in radians.
 %		(5) - argument of perigee in radians.
 %		(6) - mean anomaly in radians.
-SC_Kepler = [(6371.2+600)*1000, 0.00221, 45*pi/180, 0*pi/180, 0, 0];
-TC_Kepler = [(6371.2+600)*1000, 0.00221, 45*pi/180, 0*pi/180, 0, 0.0000001];
+SC_Kepler = [(6371.2+600)*1000, 0.00221, 0*pi/180, 0*pi/180, 0, deg2rad(270)];
+TC_Kepler = [(6371.2+600)*1000, 0.00221, 0*pi/180, 0*pi/180, 0, deg2rad(270)+0.000001];
 
 w_orbit = kepler6_to_orbit_rate(SC_Kepler);%orbit rate : [rad/s]
 
-SC_Ib = diag([1 1 1]);%[kgm^2]
-m_tot = 100;%[kg]
-Iws = diag([1 1 1 1]);
+SC_Ib = [1257.52 -0.07285  -0.0345; % [kg m^2]
+      -0.0728   11126.1   -24.1635;
+      -0.0345  -24.1635   11354.6];
+m_tot = 3019.19 ;%[kg]
 wb0 = [0 0 0]';
-qb0 = angle2quat(deg2rad(0 ),deg2rad(0),deg2rad(0),'ZYX');
+qb0 = angle2quat(deg2rad(0),deg2rad(0),deg2rad(0),'ZYX');
 vI0 = [0 0 0]';
 pI0 = [0 0 0]';
 
-%% 
-Fly_Wheel_Mass = 12;%[kg]
-% RW1
+%% Reaction Wheel Configuration
+% Fly_Wheel_Mass = 12;%[kg]
+Iws = diag([1 1 1 1])*0.227;
+RW_t_max = 0.2;
+RW_Omegad_max = 4200*rpm2rad;
+RS_Max_Speed = 4200*rpm2rad;
+
 RW1_ROT = [0 45 0]';%ZYX [deg]
 RW2_ROT = [0 0 -45]';%ZYX [deg]
 RW3_ROT = [0 -45 0]';%ZYX [deg]
@@ -48,12 +54,12 @@ RW3_Axis = RW3_ROTM(:,3);
 RW4_Axis = RW4_ROTM(:,3);
 RW_As = [RW1_Axis,RW2_Axis,RW3_Axis,RW4_Axis];
 
-Omega1_init = 0;
-Omega2_init = 0;
-Omega3_init = 0;
-Omega4_init = 0;
+Omega1_init = 1000*rpm2rad;
+Omega2_init = 1000*rpm2rad;
+Omega3_init = 1000*rpm2rad;
+Omega4_init = 1000*rpm2rad;
 
-%%
+%% RCS Configuration
 RCS_F = 1.0;%[N]
 RCS_PWM_Freq = 0.1;%[sec]
 RCS_Sampling_time = 0.01;
@@ -76,7 +82,6 @@ RCS2_THR = [1 0 0]';
 RCS3_THR = [0 -1 0]';
 RCS4_THR = [0 1 0]';
 
-%% 
 % % % % % % -Z Size % % % % % % % % %
 RCS5_ROT = [0 90 0]';%ZYX [deg]
 RCS6_ROT = [0 -90 0]';%ZYX [deg]
@@ -93,7 +98,6 @@ RCS6_THR = [1 0 0]';
 RCS7_THR = [0 -1 0]';
 RCS8_THR = [0 1 0]';
 
-%%
 % % % % % % +Y Size % % % % % % % % %
 RCS9_ROT   = [0 90 0]';%ZYX [deg]
 RCS10_ROT = [0 -90 0]';%ZYX [deg]
@@ -110,7 +114,6 @@ RCS10_THR = [1 0 0]';
 RCS11_THR = [0 0 1]';
 RCS12_THR = [0 0 -1]';
 
-%%
 % % % % % % -Y Size % % % % % % % % %
 RCS13_ROT = [0 90 0]';%ZYX [deg]
 RCS14_ROT = [0 -90 0]';%ZYX [deg]
@@ -127,7 +130,6 @@ RCS14_THR = [1 0 0]';
 RCS15_THR = [0 0 1]';
 RCS16_THR = [0 0 -1]';
 
-%%
 RCS_Pos = [RCS1_POS , RCS2_POS , RCS3_POS , RCS4_POS ,...
            RCS5_POS , RCS6_POS , RCS7_POS , RCS8_POS ,...
            RCS9_POS , RCS10_POS, RCS11_POS, RCS12_POS,...
@@ -138,6 +140,7 @@ RCS_THR_vec = [RCS1_THR , RCS2_THR , RCS3_THR , RCS4_THR, ...
                RCS9_THR , RCS10_THR, RCS11_THR, RCS12_THR, ...
                RCS13_THR, RCS14_THR, RCS15_THR, RCS16_THR];
 
+%% function 
 function out = kepler6_to_orbit_rate(kep)
 %KEPLER6_TO_ORBIT_RATE  Kepler 6요소 -> orbit rate(mean motion) 반환
 %
