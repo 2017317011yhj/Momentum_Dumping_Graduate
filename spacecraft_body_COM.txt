@@ -1,0 +1,30 @@
+spacecraft_body_COM :
+
+SC_quat_LVLH : spacecraft_body_COM를 기준으로 LVLH의 자세(LVLH 좌표계)
+SC_rate_LVLH : spacecraft_body_COM를 기준으로 LVLH의 자세각속도
+
+SC_Quat_mea : world를 기준으로 spacecraft의 쿼터니언
+
+RW_As : 반작용휠 분배행렬
+
+rw attitude control : 5*qe + 20*we PD 제어
+pd제어 타겟은 [0,0,0]
+ 
+
+#  RCS controller
+SC_position_mea :
+SC_velocity_mea :
+
+p, v, q, w ref : 위치,속도, 쿼터니언, 각속도 ref = [0,0,0]
+ 
+m = 3019.19 kg
+spacecraft: 
+Moments of Inertia = [1257.52, 11126.1, 11354.6]  kg*m^2
+Products of Inertia = [0.0728473, 24.1635, 0.0345356]  kg*m^2
+휠: 
+Moments of Inertia = [0.0773325, 0.151768, 0.0773299]  kg*m^2
+
+
+# 질문
+label(Spacecraft_THR_F)은 안쓰이는지
+RW attitude control 블록 - Iws 값이 0.15 아닌지

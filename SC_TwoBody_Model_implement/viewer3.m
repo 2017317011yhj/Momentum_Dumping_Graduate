@@ -15,6 +15,7 @@ plot(sim_t, ss_pos_i(:,1));
 hold on; grid on;
 plot(sim_t, ss_pos_i(:,2));
 plot(sim_t, ss_pos_i(:,3));
+legend
 
 figure('Name','SS Inertial POS Data Log 3D [m]');
 plot3(ss_pos_i(:,1), ss_pos_i(:,2), ss_pos_i(:,3),'k.');
@@ -23,37 +24,42 @@ axis equal;
 xlabel('POS I X [m]');
 ylabel('POS I Y [m]');
 zlabel('POS I Z [m]');
+legend
 
 figure('Name','SS Inertial VEL Data Log [m/s]');
 plot(sim_t, ss_vel_i(:,1));
 hold on; grid on;
 plot(sim_t, ss_vel_i(:,2));
 plot(sim_t, ss_vel_i(:,3));
+legend
 
 figure('Name','SS Inertial ACC Data Log [m/s^2]');
 plot(sim_t, ss_acc_i(:,1));
 hold on; grid on;
 plot(sim_t, ss_acc_i(:,2));
 plot(sim_t, ss_acc_i(:,3));
+legend
 
 figure('Name','SS Inertial Angle Data Log [deg]');
 plot(sim_t, ss_angle_i(:,1));
 hold on; grid on;
 plot(sim_t, ss_angle_i(:,2));
 plot(sim_t, ss_angle_i(:,3));
+legend
 
 figure('Name','SS Inertial Rate Data Log [deg/s]');
 plot(sim_t, ss_rate_b(:,1));
 hold on; grid on;
 plot(sim_t, ss_rate_b(:,2));
 plot(sim_t, ss_rate_b(:,3));
+legend
 
 figure('Name','SS Inertial Rate d Data Log [deg/s^2]');
 plot(sim_t, ss_rated_b(:,1));
 hold on; grid on;
 plot(sim_t, ss_rated_b(:,2));
 plot(sim_t, ss_rated_b(:,3));
-
+legend
 
 figure('Name','TS Relative Position wrt SS [m]');
 plot3(rel_ts_pos(:,1),rel_ts_pos(:,2),rel_ts_pos(:,3),'k-');
@@ -61,4 +67,4 @@ grid on;
 xlabel('Rel POS I X [m]');
 ylabel('Rel POS I Y [m]');
 zlabel('Rel POS I Z [m]');
-
+legend

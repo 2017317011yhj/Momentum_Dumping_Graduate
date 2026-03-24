@@ -17,11 +17,17 @@ TC_Kepler = [(6371.2+600)*1000, 0.00221, 45*pi/180, 0*pi/180, 0, 0.0000001];
 
 w_orbit = kepler6_to_orbit_rate(SC_Kepler);%orbit rate : [rad/s]
 
+% spacecraft state
 SC_Ib = diag([1 1 1]);%[kgm^2]
+% SC_Ib = [1257.52 -0.07285  -0.0345; % [kg m^2]
+%       -0.0728   11126.1   -24.1635;
+%       -0.0345  -24.1635   11354.6];
+% m_tot = 3000;%[kg]
 m_tot = 100;%[kg]
+% Iws = 0.1518 * eye(4);
 Iws = diag([1 1 1 1]);
 wb0 = [0 0 0]';
-qb0 = angle2quat(deg2rad(0 ),deg2rad(0),deg2rad(0),'ZYX');
+qb0 = angle2quat(deg2rad(0),deg2rad(0),deg2rad(0),'ZYX');
 vI0 = [0 0 0]';
 pI0 = [0 0 0]';
 
@@ -48,8 +54,9 @@ RW3_Axis = RW3_ROTM(:,3);
 RW4_Axis = RW4_ROTM(:,3);
 RW_As = [RW1_Axis,RW2_Axis,RW3_Axis,RW4_Axis];
 
+% 휠 초기 각속도
 Omega1_init = 0;
-Omega2_init = 0;
+Omega2_init = 0; 
 Omega3_init = 0;
 Omega4_init = 0;
 
