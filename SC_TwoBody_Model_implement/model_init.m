@@ -14,17 +14,17 @@ dt = 0.01;
 %		(5) - argument of perigee in radians.
 %		(6) - mean anomaly in radians.
 SC_Kepler = [(6371.2+600)*1000, 0.00221, 0*pi/180, 0*pi/180, 0, deg2rad(270)];
-TC_Kepler = [(6371.2+600)*1000, 0.00221, 0*pi/180, 0*pi/180, 0, deg2rad(270)+0.00001];
+TS_Kepler = [(6371.2+600)*1000, 0.00221, 0*pi/180, 0*pi/180, 0, deg2rad(270)+0.000003];
 SC_state0 = kepel_statvec (SC_Kepler);
-TC_state0 = kepel_statvec (TC_Kepler);
+TS_state0 = kepel_statvec (TS_Kepler);
 
 SC_pos0 = [SC_state0(1),SC_state0(2),SC_state0(3)]';%ECI 
 SC_vel0 = [SC_state0(4),SC_state0(5),SC_state0(6)]';%ECI 
-TC_pos0 = [TC_state0(1),TC_state0(2),TC_state0(3)]';%ECI 
-TC_vel0 = [TC_state0(4),TC_state0(5),TC_state0(6)]';%ECI 
+TS_pos0 = [TS_state0(1),TS_state0(2),TS_state0(3)]';%ECI 
+TS_vel0 = [TS_state0(4),TS_state0(5),TS_state0(6)]';%ECI 
 
-REL_TS_POS_I_0 = TC_pos0 - SC_pos0;
-REL_TS_VEL_I_0 = TC_vel0 - SC_vel0;
+REL_TS_POS_I_0 = TS_pos0 - SC_pos0;
+REL_TS_VEL_I_0 = TS_vel0 - SC_vel0;
 
 % w_orbit = kepler6_to_orbit_rate(SC_Kepler);%orbit rate : [rad/s]
 
@@ -33,13 +33,15 @@ SC_Ib = [1257.52 -0.07285  -0.0345; % [kg m^2]
       -0.0345  -24.1635   11354.6];
 m_tot = 3019.19 ;%[kg]
 wb0 = [0 0 0]';
-qb0 = angle2quat(deg2rad(0),deg2rad(0),deg2rad(0),'ZYX')';
+% ag0 = deg2rad([-5 5 -5]');
+ag0 = [0 0 0]';
+qb0 = eul2quat(ag0','ZYX')';
 vI0 = [0 0 0]';
 pI0 = [0 0 0]';
 
-TC_Ib = diag([1 1 1]);
-TC_wb0 = deg2rad([0 0 0]');
-TC_qb0 = angle2quat(deg2rad(0),deg2rad(0),deg2rad(0),'ZYX')';
+TS_Ib = diag([1 1 1]);
+TS_wb0 = deg2rad([0 0 0]');
+TS_qb0 = angle2quat(deg2rad(0),deg2rad(0),deg2rad(0),'ZYX')';
 
 %% Reaction Wheel Configuration
 % Fly_Wheel_Mass = 12;%[kg]
@@ -153,6 +155,7 @@ RCS_THR_vec = [RCS1_THR , RCS2_THR , RCS3_THR , RCS4_THR, ...
                RCS5_THR , RCS6_THR , RCS7_THR , RCS8_THR, ...
                RCS9_THR , RCS10_THR, RCS11_THR, RCS12_THR, ...
                RCS13_THR, RCS14_THR, RCS15_THR, RCS16_THR];
+
 
 %% function
 function statvec  = kepel_statvec(kepel)
