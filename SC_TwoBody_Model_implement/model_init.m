@@ -33,8 +33,8 @@ SC_Ib = [1257.52 -0.07285  -0.0345; % [kg m^2]
             -0.0345  -24.1635   11354.6];
 m_tot = 3019.19 ;%[kg]
 wb0 = [0 0 0]';
-% ag0 = deg2rad([-5 5 -5]');
-ag0 = [0 0 0]';
+ag0 = deg2rad([-5 5 -5]');
+% ag0 = [10 0 0]';
 qb0 = eul2quat(ag0','ZYX')';
 vI0 = [0 0 0]';
 pI0 = [0 0 0]';
@@ -77,7 +77,7 @@ Omega4_init = 1000*rpm2rad;
 
 %% RCS Configuration
 RCS_F = 1.0;%[N]
-RCS_PWM_Freq = 0.1;%[sec]
+RCS_PWM_Freq = 0.5;%[sec]
 RCS_Sampling_time = 0.01;
 % THR.info : https://satsearch.co/products/ecaps-22n-hpgp-thruster?utm_source=chatgpt.com
 RCS_Facealpha = 1.0;
