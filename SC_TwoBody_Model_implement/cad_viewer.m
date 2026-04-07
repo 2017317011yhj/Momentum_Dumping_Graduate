@@ -1,7 +1,7 @@
-clc; close all;
+clc;  
 
 t = out.tout;
-SS_POS_I = out.SS_POS_I;
+TS_POS_I = out.TS_POS_I;
 
 %% STL 파일 경로
 stlFile = 'ISS_stationary.stl';   % 파일명만 바꿔서 사용하세요
@@ -14,7 +14,8 @@ scale = 5000;   % 1000배 확대
 % 새 triangulation 생성
 TR_big = triangulation(TR.ConnectivityList, TR.Points * scale);
 
-figure('Color','w');
+figure(1);clf
+set(gcf, 'Color', 'w');
 ax = axes;
 grid on; hold on;
 
@@ -34,15 +35,15 @@ ylabel('Y [m]');
 zlabel('Z [m]');
 title('STL Viewer');
 
-camlight('headlight');
+% camlight('headlight');
 camlight('right');
 lighting gouraud;
 material dull;
 
 % draw earth
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%
 % rotate3d on;
-n = 600;
+n = 50;
 Re = 6378137;
 
 % sphere
@@ -71,15 +72,20 @@ hs = surf(X, Y, Z, img, ...
     'AmbientStrength', 0.35, ...
     'FaceAlpha', 0.5, ...
     'Parent', ht_earth);   % <-- 여기 중요
-
+view(-15,35)
+camlight('right');
 axis equal;
+axis(7.e+06*[-1 1 -1 1 -1 1])
+plot3(TS_POS_I(:,1),TS_POS_I(:,2),TS_POS_I(:,3),'r:',"LineWidth",1)
 
-for i=1:1000:length(t)
-    T = makehgtform('translate',SS_POS_I(i,:));
-    % Rz = makehgtform('zrotate', yaw);
+
+for i=1:500:length(t)
+    % T = makehgtform('translate',TS_POS_I(i,:),'zrotate', yaw,'yrotate', pitch,'xrotate', roll);
+    % Rz = makehgtform('zrotate', yaw); % rad
     % Ry = makehgtform('yrotate', pitch);
     % Rx = makehgtform('xrotate', roll);
-
+    
+    T = makehgtform('translate',TS_POS_I(i,:));
     % 적용 순서: 오른쪽부터 먼저 적용
     % ht.Matrix = T * Rz * Ry * Rx;
     ht.Matrix = T;
@@ -89,4 +95,4 @@ for i=1:1000:length(t)
 end
 
 
-
+ 
