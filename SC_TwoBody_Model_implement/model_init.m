@@ -20,13 +20,13 @@ TS_state0 = kepel_statvec (TS_Kepler);
 
 SC_pos0 = [SC_state0(1),SC_state0(2),SC_state0(3)]';%ECI 
 SC_vel0 = [SC_state0(4),SC_state0(5),SC_state0(6)]';%ECI 
-TS_pos0 = [TS_state0(1),TS_state0(2),TS_state0(3)]';%ECI 
+TS_pos0 = [TS_state0(1),TS_state0(2),TS_state0(3)]';%ECI w_orbitw_orbitw_orbit
 TS_vel0 = [TS_state0(4),TS_state0(5),TS_state0(6)]';%ECI 
 
 REL_TS_POS_I_0 = TS_pos0 - SC_pos0;
 REL_TS_VEL_I_0 = TS_vel0 - SC_vel0;
 
-% w_orbit = kepler6_to_orbit_rate(SC_Kepler);%orbit rate : [rad/s]
+w_orbit = kepler6_to_orbit_rate(TS_Kepler); % orbit rate : [rad/s]
 
 SC_Ib = [1257.52 -0.07285  -0.0345; % [kg m^2]
             -0.0728   11126.1   -24.1635;
@@ -34,7 +34,6 @@ SC_Ib = [1257.52 -0.07285  -0.0345; % [kg m^2]
 m_tot = 3019.19 ;%[kg]
 wb0 = [0 0 0]';
 ag0 = deg2rad([-5 5 -5]');
-% ag0 = [10 0 0]';
 qb0 = eul2quat(ag0','ZYX')';
 vI0 = [0 0 0]';
 pI0 = [0 0 0]';
@@ -316,4 +315,35 @@ coan    =  cos(angle);
 sian    =  sin(angle);
 
 rot_mat =  [coan, sian, 0; -sian, coan, 0; 0, 0, 1];
+end
+
+
+function out = kepler6_to_orbit_rate(kep)
+%KEPLER6_TO_ORBIT_RATE  Kepler 6요소 -> orbit rate(mean motion) 반환
+%
+% kep = [a; e; i; RAAN; argp; M]  (rad)
+%   a [m] 만으로 mean motion n이 결정.
+% (1) - semimajor axis of the orbit in meters. 
+% (2) - eccentricity. 
+% (3) - inclinatsion in radians. 
+% (4) - right ascension of ascending node in radians. 
+% (5) - argument of perigee in radians. 
+% (6) - mean anomaly in radians.
+%
+% out:
+%   out.n_rad_s   : mean motion [rad/s]
+%   out.n_deg_s   : mean motion [deg/s]
+%   out.n_rev_day : mean motion [rev/day]
+%   out.period_s  : orbital period [s]
+%   out.period_min: orbital period [min]
+
+mu = 3.986004418e14; % Earth [m^3/s^2]
+
+a = kep(1);
+
+% mean motion
+n = sqrt(mu / (a^3));           % [rad/s]
+
+out = n;
+
 end
