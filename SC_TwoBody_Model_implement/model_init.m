@@ -28,9 +28,10 @@ REL_TS_VEL_I_0 = TS_vel0 - SC_vel0;
 
 w_orbit = kepler6_to_orbit_rate(TS_Kepler); % orbit rate : [rad/s]
 
-SC_Ib = [1257.52 -0.07285  -0.0345; % [kg m^2]
-            -0.0728   11126.1   -24.1635;
-            -0.0345  -24.1635   11354.6];
+SC_Ib = [1257.52  -0.07285  -0.0345; % [kg m^2]
+         -0.0728   11126.1  -24.1635;
+         -0.0345  -24.1635  11354.6];
+norm_Ib = diag(diag(SC_Ib) / norm(diag(SC_Ib)));
 m_tot = 3019.19 ;%[kg]
 wb0 = [0 0 0]';
 ag0 = deg2rad([-5 5 -5]');
@@ -40,6 +41,7 @@ pI0 = [0 0 0]';
 
 TS_Ib = diag([1 1 1]);
 TS_wb0 = deg2rad([0 0 0]');
+TS_wb0(3) = w_orbit;
 TS_qb0 = angle2quat(deg2rad(0),deg2rad(0),deg2rad(0),'ZYX')';
 
 %% Reaction Wheel Configuration
