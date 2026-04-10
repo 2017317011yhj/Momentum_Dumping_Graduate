@@ -67,7 +67,7 @@ subplot(3,1,2)
 hold on;grid on;ylabel('\omega_{err} [deg/s]');xlabel('time [s]');ylim padded
 w_err = ss_rate_b - ts_rate_b;
 plot(sim_t,w_err)
-legend('x','y','z');xlim padded
+legend('x','y','z'); 
 subplot(3,1,3)
 hold on;grid on;ylabel('wheer rate [rpm]');xlabel('time [s]');ylim padded
 plot(sim_t,wheel_rate)
