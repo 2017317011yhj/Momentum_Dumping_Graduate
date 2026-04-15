@@ -7,7 +7,7 @@ rpm2rad = (2*pi)/60;
 rad2rpm = 1/rpm2rad;
 dt = 0.01;
 
-%		(1) - semimajor axis of the orbit in meters. 
+%		(1) - semimajor axis of the orbit in meters.
 %		(2) - eccentricity.
 %		(3) - inclinatsion in radians.
 %		(4) - right ascension of ascending node in radians.
@@ -34,7 +34,8 @@ SC_Ib = [1257.52  -0.07285  -0.0345; % [kg m^2]
 norm_Ib = diag(diag(SC_Ib) / norm(diag(SC_Ib)));
 m_tot = 3019.19 ;%[kg]
 wb0 = [0 0 0]';
-ag0 = deg2rad([-5 5 -5]');
+% ag0 = deg2rad([-5 5 -5]');
+ag0 = deg2rad([45 0 0]');
 qb0 = eul2quat(ag0','ZYX')';
 vI0 = [0 0 0]';
 pI0 = [0 0 0]';
@@ -48,7 +49,6 @@ TS_qb0 = angle2quat(deg2rad(0),deg2rad(0),deg2rad(0),'ZYX')';
 % Fly_Wheel_Mass = 12;%[kg]
 Iws = diag([1 1 1 1])*0.227;
 RW_t_max = 0.2;
-% RW_Omegad_max = 4200*rpm2rad;
 RW_Omegad_max = 4200*rpm2rad;
 RW_Max_Speed = 4200*rpm2rad;
 
