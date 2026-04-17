@@ -28,11 +28,11 @@ REL_TS_VEL_I_0 = TS_vel0 - SC_vel0;
 
 w_orbit = kepler6_to_orbit_rate(TS_Kepler); % orbit rate : [rad/s]
 
-SC_Ib = [1257.52  -0.07285  -0.0345; % [kg m^2]
-         -0.0728   11126.1  -24.1635;
-         -0.0345  -24.1635  11354.6];
+SC_Ib = [1843.56  -0.0019  -803.89; % [kg m^2]
+         -0.0019  22725.16 -6.36;
+         -803.89  -6.36    22894.86];
 norm_Ib = diag(diag(SC_Ib) / norm(diag(SC_Ib)));
-m_tot = 3019.19 ;%[kg]
+m_tot = 3300;%[kg]
 wb0 = [0 0 0]';
 ag0 = deg2rad([-5 5 -5]');
 qb0 = eul2quat(ag0','ZYX')';
@@ -48,7 +48,6 @@ TS_qb0 = angle2quat(deg2rad(0),deg2rad(0),deg2rad(0),'ZYX')';
 % Fly_Wheel_Mass = 12;%[kg]
 Iws = diag([1 1 1 1])*0.227;
 RW_t_max = 0.2;
-% RW_Omegad_max = 4200*rpm2rad;
 RW_Omegad_max = 4200*rpm2rad;
 RW_Max_Speed = 4200*rpm2rad;
 

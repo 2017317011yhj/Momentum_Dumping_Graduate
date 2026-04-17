@@ -145,18 +145,14 @@ axis([-22 2 -5 5 -3 3])
 view(-20,35) 
 
 % stl 모델
-stlFile = 'geo.stl';   % 파일명만 바꿔서 사용하세요
+stlFile = 'geo_mod.stl';   % 파일명만 바꿔서 사용하세요
 TR = stlread(stlFile);
 
 V = TR.Points*0.5;  %   확대
-V = V - mean(V, 1);
-Rz = [-1 0 0;
-      0 -1 0;
-      0  0 1];
-V2 = (Rz * V')';
 
-[F,V3] = reducepatch(TR.ConnectivityList, V2, 0.5); % 20%만 유지
-TR_big = triangulation(F, V3);
+
+[F,V2] = reducepatch(TR.ConnectivityList, V, 0.5); % 20%만 유지
+TR_big = triangulation(F, V2);
 
 % Transform 객체 생성
 ht = hgtransform('Parent', ax);
@@ -228,49 +224,3 @@ end
 
  
 
-%%
-% figure(3);clf
-% title('T&S in ECI')
-% hold on; grid on; 
-% xlabel('X [m]');
-% ylabel('Y [m]');
-% zlabel('Z [m]');
-% axis equal
-% axis padded
-% % axis([-1 1 -1 1 -1 1]*7000000)
-% view(-20,40)
-% 
-% 
-% s_qv1 = quiver3(ss_pos_i(1,1),ss_pos_i(1,2),ss_pos_i(1,3),0,0,0,'r');
-% s_qv2 = quiver3(ss_pos_i(1,1),ss_pos_i(1,2),ss_pos_i(1,3),0,0,0,'g');
-% s_qv3 = quiver3(ss_pos_i(1,1),ss_pos_i(1,2),ss_pos_i(1,3),0,0,0,'b');
-% 
-% s_p = plot3(ss_pos_i(1,1),ss_pos_i(1,2),ss_pos_i(1,3),'.r',"MarkerSize",20);
-% p2 = plot3(ts_pos_i(1,1),ts_pos_i(1,2),ts_pos_i(1,3),'.b',"MarkerSize",20);
-% 
-% for i = 1:50:length(sim_t)
-% r_s = quat_to_rotm(SS_q_b(i,:))*5;
-% 
-% set(s_p,"XData",ss_pos_i(i,1),"YData",ss_pos_i(i,2),"ZData",ss_pos_i(i,3))
-% set(p2,"XData",ts_pos_i(i,1),"YData",ts_pos_i(i,2),"ZData",ts_pos_i(i,3))
-% set(s_qv1,"XData",ss_pos_i(i,1),"YData",ss_pos_i(i,2),"ZData",ss_pos_i(i,3), ...
-%     "UData", r_s(1,1),"VData",r_s(2,1),"WData",r_s(3,1))
-% set(s_qv2,"XData",ss_pos_i(i,1),"YData",ss_pos_i(i,2),"ZData",ss_pos_i(i,3), ...
-%     "UData", r_s(1,2),"VData",r_s(2,2),"WData",r_s(3,2))
-% set(s_qv3,"XData",ss_pos_i(i,1),"YData",ss_pos_i(i,2),"ZData",ss_pos_i(i,3), ...
-%     "UData", r_s(1,3),"VData",r_s(2,3),"WData",r_s(3,3))
-% 
-% drawnow;
-% pause(0.0001);
-% 
-% end
-
- 
-% function R = quat_to_rotm(q)
-%     % q = [qw qx qy qz], Body -> Inertial
-%     qw = q(1); qx = q(2); qy = q(3); qz = q(4);
-% 
-%     R = [1-2*(qy^2+qz^2),   2*(qx*qy-qz*qw),   2*(qx*qz+qy*qw);
-%          2*(qx*qy+qz*qw),   1-2*(qx^2+qz^2),   2*(qy*qz-qx*qw);
-%          2*(qx*qz-qy*qw),   2*(qy*qz+qx*qw),   1-2*(qx^2+qy^2)];
-% end
