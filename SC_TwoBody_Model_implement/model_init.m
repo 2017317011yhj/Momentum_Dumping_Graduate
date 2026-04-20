@@ -47,8 +47,8 @@ TS_qb0 = angle2quat(deg2rad(0),deg2rad(0),deg2rad(0),'ZYX')';
 %% Reaction Wheel Configuration
 % Fly_Wheel_Mass = 12;%[kg]
 Iws = diag([1 1 1 1])*0.227;
-RW_t_max = 0.2;
-RW_Omegad_max = 4200*rpm2rad;
+RW_t_max = 0.5;
+RW_Omegad_max = RW_t_max;
 RW_Max_Speed = 4200*rpm2rad;
 
 RW1_ROT = [0 45 0]';%ZYX [deg]
