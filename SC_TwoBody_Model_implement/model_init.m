@@ -71,10 +71,10 @@ RW3_Axis = RW3_ROTM(:,3);
 RW4_Axis = RW4_ROTM(:,3);
 RW_As = [RW1_Axis,RW2_Axis,RW3_Axis,RW4_Axis];
 
-Omega1_init = 1000*rpm2rad;
-Omega2_init = 1000*rpm2rad;
-Omega3_init = 1000*rpm2rad;
-Omega4_init = 1000*rpm2rad;
+Omega1_init = 2000*rpm2rad;
+Omega2_init = 2000*rpm2rad;
+Omega3_init = 2000*rpm2rad;
+Omega4_init = 2000*rpm2rad;
 
 %% RCS Configuration
 RCS_F = 1.0;%[N]
