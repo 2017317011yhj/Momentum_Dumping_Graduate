@@ -25,9 +25,15 @@ los_angle = out.LoS_angle;
 wheel_rate = out.wheel_rate; 
 wheel_rated = out.wheel_rated;
 
+qp_F_cmd = out.RCS_QP_F_cmd;
+qp_tau_cmd = out.RCS_QP_tau_cmd;
+qp_rw_cmd = out.RW_QP_tau_cmd;
+s_tau = out.S_tau;
+s_dump = out.S_dump;
+s_F = out.S_F;
 
 %% plot
-
+% 상대 위치 오차
 figure(1);clf
 sgtitle('Target-Chaser relative state')
 subplot(3,1,1)
@@ -46,7 +52,8 @@ hold on;grid on;ylabel('Acc [m/s^2]');xlabel('time [s]')
 plot(sim_t, rel_ts_acc(:,1))
 plot(sim_t, rel_ts_acc(:,2))
 plot(sim_t, rel_ts_acc(:,3))
- 
+
+% Los angle
 figure(2);clf
 sgtitle('LoS angle')
 hold on;grid on;ylabel('deg');xlabel('time [s]')
@@ -55,25 +62,63 @@ plot(sim_t, los_angle(:,2))
 plot(sim_t, los_angle(:,3))
 legend('x','y','z')
 
-
+% 상대 자세 오차
 figure(3);clf
 sgtitle('Attitude error')
-subplot(3,1,1)
+subplot(2,1,1)
 hold on;grid on;ylabel('q_{err}');xlabel('time [s]');ylim padded
 q_err = quatmultiply(quatinv(ts_q_b), ss_q_b);
-plot(sim_t,q_err)
-legend('q_0','q_1','q_2','q_3');
-subplot(3,1,2)
+angle_err = quat2eul(q_err);
+plot(sim_t,angle_err)
+legend('x','y','z');
+subplot(2,1,2)
 hold on;grid on;ylabel('\omega_{err} [deg/s]');xlabel('time [s]');ylim padded
 w_err = ss_rate_b - ts_rate_b;
 plot(sim_t,w_err)
 legend('x','y','z'); 
-subplot(3,1,3)
-hold on;grid on;ylabel('wheer rate [rpm]');xlabel('time [s]');ylim padded
+
+% RW 상태
+figure(4);clf
+title('Wheel speed')
+hold on;grid on;ylabel('[rpm]');xlabel('time [s]');ylim([-1000 4500])
 plot(sim_t,wheel_rate)
+yline(Omega_ref(1)*rad2rpm,'--','LineWidth',1)
+legend('w_1','w_2','w_3','w_4','reference')
+
+% qp cmd
+figure(5);clf
+sgtitle('QP result')
+subplot(3,1,1)
+hold on;grid on;ylabel('RCS F cmd');xlabel('time [s]');ylim([-4.2 4.2])
+plot(sim_t,qp_F_cmd)
+legend('x','y','z')
+subplot(3,1,2)
+hold on;grid on;ylabel('RCS torque cmd');xlabel('time [s]');ylim([-4 4])
+plot(sim_t,qp_tau_cmd)
+legend('x','y','z')
+subplot(3,1,3)
+hold on;grid on;ylabel('RW torque cmd');xlabel('time [s]');ylim([-0.6 0.6])
+plot(sim_t,qp_rw_cmd)
 legend('w_1','w_2','w_3','w_4')
+ 
 
 
+% slack 변수
+% figure(6);clf
+% sgtitle('slack variable')
+% subplot(3,1,1)
+% hold on;grid on;ylabel('RCS F slack');xlabel('time [s]');ylim padded
+% plot(sim_t,s_F)
+% legend('x','y','z')
+% subplot(3,1,2)
+% hold on;grid on;ylabel('RCS dump slack');xlabel('time [s]');ylim padded
+% plot(sim_t,s_dump)
+% legend('x','y','z')
+% subplot(3,1,3)
+% hold on;grid on;ylabel('RW torque slack');xlabel('time [s]');ylim padded
+% plot(sim_t,s_tau)
+% legend('w_1','w_2','w_3','w_4')
+ 
 
 
 
@@ -90,7 +135,7 @@ legend('w_1','w_2','w_3','w_4')
 % xlabel('POS I X [m]');
 % ylabel('POS I Y [m]');
 % zlabel('POS I Z [m]');
-
+%
 % figure('Name','SS Inertial VEL Data Log [m/s]');
 % plot(sim_t, ss_vel_i(:,1));
 % hold on; grid on;
@@ -122,7 +167,7 @@ legend('w_1','w_2','w_3','w_4')
 % plot(sim_t, ss_rated_b(:,2));
 % plot(sim_t, ss_rated_b(:,3));
 % 
-
+%
 % figure('Name','TS Relative Position wrt SS [m]');
 % plot3(rel_ts_pos(:,1),rel_ts_pos(:,2),rel_ts_pos(:,3),'k-');
 % grid on;
@@ -131,7 +176,8 @@ legend('w_1','w_2','w_3','w_4')
 % zlabel('Rel POS I Z [m]');
 
  
-%%
+
+%% 3d motion
 figure(100);clf
 set(gcf, 'Color', 'w');
 ax = axes;

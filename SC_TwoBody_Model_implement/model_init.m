@@ -50,6 +50,11 @@ Iws = diag([1 1 1 1])*0.227;
 RW_t_max = 0.5;
 RW_Omegad_max = RW_t_max;
 RW_Max_Speed = 4200*rpm2rad;
+Omega_ref = [1000 1000 1000 1000]*rpm2rad;
+Omega1_init = 2000*rpm2rad;
+Omega2_init = 2000*rpm2rad;
+Omega3_init = 2000*rpm2rad;
+Omega4_init = 2000*rpm2rad;
 
 RW1_ROT = [0 45 0]';%ZYX [deg]
 RW2_ROT = [0 0 -45]';%ZYX [deg]
@@ -71,14 +76,10 @@ RW3_Axis = RW3_ROTM(:,3);
 RW4_Axis = RW4_ROTM(:,3);
 RW_As = [RW1_Axis,RW2_Axis,RW3_Axis,RW4_Axis];
 
-Omega1_init = 2000*rpm2rad;
-Omega2_init = 2000*rpm2rad;
-Omega3_init = 2000*rpm2rad;
-Omega4_init = 2000*rpm2rad;
 
 %% RCS Configuration
 RCS_F = 1.0;%[N]
-RCS_PWM_Freq = 0.5;%[sec]
+RCS_PWM_Freq = 0.1;%[sec]
 RCS_Sampling_time = 0.01;
 % THR.info : https://satsearch.co/products/ecaps-22n-hpgp-thruster?utm_source=chatgpt.com
 RCS_Facealpha = 1.0;
