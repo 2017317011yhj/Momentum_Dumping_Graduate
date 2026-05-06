@@ -21,7 +21,7 @@ rel_ts_pos = out.REL_TS_POS_I;
 rel_ts_vel = out.REL_TS_VEL_I;
 rel_ts_acc = out.REL_TS_ACC_I;
 
-los_angle = out.LoS_angle;
+% los_angle = out.LoS_angle;
 wheel_rate = out.wheel_rate; 
 wheel_rated = out.wheel_rated;
 
@@ -31,6 +31,7 @@ qp_rw_cmd = out.RW_QP_tau_cmd;
 s_tau = out.S_tau;
 s_dump = out.S_dump;
 s_F = out.S_F;
+q_err = quatmultiply(quatinv(ts_q_b), ss_q_b);
 
 %% plot
 % 상대 위치 오차
@@ -43,7 +44,7 @@ plot(sim_t, rel_ts_pos(:,2))
 plot(sim_t, rel_ts_pos(:,3))
 legend('x','y','z')
 subplot(3,1,2)
-hold on;grid on;ylabel('Vel [m/s]')
+hold on;grid on;ylabel('Vel [m/s]');ylim padded
 plot(sim_t, rel_ts_vel(:,1))
 plot(sim_t, rel_ts_vel(:,2))
 plot(sim_t, rel_ts_vel(:,3))
@@ -54,36 +55,42 @@ plot(sim_t, rel_ts_acc(:,2))
 plot(sim_t, rel_ts_acc(:,3))
 
 % Los angle
-figure(2);clf
-sgtitle('LoS angle')
-hold on;grid on;ylabel('deg');xlabel('time [s]')
-plot(sim_t, los_angle(:,1))
-plot(sim_t, los_angle(:,2))
-plot(sim_t, los_angle(:,3))
-legend('x','y','z')
+% figure(2);clf
+% sgtitle('LoS angle')
+% hold on;grid on;ylabel('deg');xlabel('time [s]')
+% plot(sim_t, los_angle(:,1))
+% plot(sim_t, los_angle(:,2))
+% plot(sim_t, los_angle(:,3))
+% legend('x','y','z')
 
 % 상대 자세 오차
 figure(3);clf
 sgtitle('Attitude error')
 subplot(2,1,1)
-hold on;grid on;ylabel('q_{err}');xlabel('time [s]');ylim padded
-q_err = quatmultiply(quatinv(ts_q_b), ss_q_b);
+hold on;grid on;ylabel('ang_{err} [deg]'); ylim padded
 angle_err = quat2eul(q_err);
-plot(sim_t,angle_err)
+plot(sim_t,angle_err * 180/pi)
 legend('x','y','z');
 subplot(2,1,2)
 hold on;grid on;ylabel('\omega_{err} [deg/s]');xlabel('time [s]');ylim padded
 w_err = ss_rate_b - ts_rate_b;
-plot(sim_t,w_err)
+plot(sim_t,w_err * 180/pi)
 legend('x','y','z'); 
 
 % RW 상태
 figure(4);clf
+subplot(2,1,1)
 title('Wheel speed')
-hold on;grid on;ylabel('[rpm]');xlabel('time [s]');ylim([-1000 4500])
+hold on;grid on;ylabel('[rpm]');ylim([-1000 4500])
 plot(sim_t,wheel_rate)
 yline(Omega_ref(1)*rad2rpm,'--','LineWidth',1)
 legend('w_1','w_2','w_3','w_4','reference')
+subplot(2,1,2)
+title('Wheel Acc')
+hold on;grid on;ylabel('[rad/s^2]');xlabel('time [s]');ylim padded
+plot(sim_t,wheel_rated*rpm2rad)
+
+
 
 % qp cmd
 figure(5);clf
@@ -101,6 +108,9 @@ hold on;grid on;ylabel('RW torque cmd');xlabel('time [s]');ylim([-0.6 0.6])
 plot(sim_t,qp_rw_cmd)
 legend('w_1','w_2','w_3','w_4')
  
+% RCS duty
+
+
 
 
 % slack 변수
@@ -176,7 +186,7 @@ legend('w_1','w_2','w_3','w_4')
 % zlabel('Rel POS I Z [m]');
 
  
-
+return
 %% 3d motion
 figure(100);clf
 set(gcf, 'Color', 'w');
@@ -187,37 +197,54 @@ xlabel('X [m]');
 ylabel('Y [m]');
 zlabel('Z [m]');
 axis equal
-axis([-22 2 -5 5 -3 3])
-view(-20,35) 
+axis([-33 9 -4 4 -4 4])
+view(-40,30)
 
-% stl 모델
-stlFile = 'geo_mod.stl';   % 파일명만 바꿔서 사용하세요
-TR = stlread(stlFile);
+% Target 모델
+TS_stl = stlread('ISS_stationary.stl');
+TS_stl = triangulation(TS_stl.ConnectivityList, TS_stl.Points * 0.36);
+ht = hgtransform('Parent', ax);
+h1 = trisurf(TS_stl, ...
+    'FaceColor', [0.6 0.6 0.6], ...
+    'EdgeColor', 'none', ...
+    'FaceAlpha', 0.7, ...
+    'Parent', ht);
+T = eye(4);
+T(1:3,1:3) = [ 0  0  1;
+               0 -1  0;
+               1  0  0];
+T(1:3,4) = [31.3 0.8 0]';
+ht.Matrix = T;
+camlight('right')
 
-V = TR.Points*0.5;  %   확대
+
+% chaser 모델
+SS_stl = stlread('geo_mod.stl');
+
+V = SS_stl.Points*1;  %   확대
 
 
-[F,V2] = reducepatch(TR.ConnectivityList, V, 0.5); % 20%만 유지
-TR_big = triangulation(F, V2);
+[F,V2] = reducepatch(SS_stl.ConnectivityList, V, 0.5); % 20%만 유지
+SS_stl = triangulation(F, V2);
 
 % Transform 객체 생성
-ht = hgtransform('Parent', ax);
+hs = hgtransform('Parent', ax);
 
 % STL patch 생성 (Parent를 ht로 지정)
-h = trisurf(TR_big, ...
+h2 = trisurf(SS_stl, ...
     'FaceColor', [0.8 0.8 0.8], ...
     'EdgeColor', 'none', ...
     'FaceAlpha', 0.8, ...
-    'Parent', ht);
-camlight('right');
-lighting gouraud;
+    'Parent', hs);
+
+
 % lighting flat
 
 % target
 Rs = quat2rotm(ts_q_b(1,:));
-ex = Rs * [1;0;0] * 2e+6;
-ey = Rs * [0;1;0] * 2e+6;
-ez = Rs * [0;0;1] * 2e+6;
+ex = Rs * [1;0;0] * 0.5;
+ey = Rs * [0;1;0] * 0.5;
+ez = Rs * [0;0;1] * 0.5;
 t_p = plot3(0,0,0,'b.',"MarkerSize",20); 
 
 % ss
@@ -234,10 +261,9 @@ t_qvz = quiver3(0,0,0,ez(1),ez(2),ez(3),3,'b','LineWidth',1);
 
 legend([t_p s_p s_qvx s_qvy s_qvz], {'target','chaser','x','y','z'},'Location','southeast');
  
-for i = 1:100:length(sim_t)
-    % frame
+for i = 1:100:length(sim_t) 
     % ss
-    Rs = quat2rotm(ss_q_b(i,:));
+    Rs = quat2rotm(q_err(i,:));
     r_s = Rs*0.5;
    
     norm_r = rel_ts_pos(i,:)/norm(rel_ts_pos(i,:));
@@ -249,18 +275,19 @@ for i = 1:100:length(sim_t)
         "UData", r_s(1,2),"VData",r_s(2,2),"WData",r_s(3,2))
     set(s_qvz,"XData",-rel_ts_pos(i,1),"YData",-rel_ts_pos(i,2),"ZData",-rel_ts_pos(i,3), ...
         "UData", r_s(1,3),"VData",r_s(2,3),"WData",r_s(3,3))
+
     % ts
-    Rt = quat2rotm(ts_q_b(i,:));
-    r_t = Rt*0.5;
-    set(t_qvx,"UData", r_t(1,1),"VData",r_t(2,1),"WData",r_t(3,1))
-    set(t_qvy,"UData", r_t(1,2),"VData",r_t(2,2),"WData",r_t(3,2))
-    set(t_qvz,"UData", r_t(1,3),"VData",r_t(2,3),"WData",r_t(3,3))
+    % Rt = quat2rotm(ts_q_b(i,:));
+    % r_t = Rt*0.5;
+    % set(t_qvx,"UData", r_t(1,1),"VData",r_t(2,1),"WData",r_t(3,1))
+    % set(t_qvy,"UData", r_t(1,2),"VData",r_t(2,2),"WData",r_t(3,2))
+    % set(t_qvz,"UData", r_t(1,3),"VData",r_t(2,3),"WData",r_t(3,3))
     
     % spacecraft
     T = eye(4);
     T(1:3,1:3) = Rs;
-    T(1:3,4) = -rel_ts_pos(i,:)';
-    ht.Matrix = T;
+    T(1:3,4) = -rel_ts_pos(i,:)' - Rs*[6.3;0;0.7];
+    hs.Matrix = T;
 
     
     drawnow;

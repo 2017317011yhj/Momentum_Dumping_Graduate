@@ -111,7 +111,16 @@ qx = quiver3(TS_POS_I(1,1),TS_POS_I(1,2),TS_POS_I(1,3),ex(1),ex(2),ex(3),1,'r',L
 qy = quiver3(TS_POS_I(1,1),TS_POS_I(1,2),TS_POS_I(1,3),ey(1),ey(2),ey(3),1,'g',LineWidth=1.5);
 qz = quiver3(TS_POS_I(1,1),TS_POS_I(1,2),TS_POS_I(1,3),ez(1),ez(2),ez(3),1,'b',LineWidth=1.5);
 
-for i=1:500:length(t)
+% legend([qx, qy, qz],{'x','y','z'})
+
+R_BS = [ 0  0  1;
+         0 -1  0;
+         1  0  0 ];
+
+H_BS = eye(4);
+H_BS(1:3,1:3) = R_BS;
+
+for i=1:300:length(t)
     eul = quat2eul(ts_q_b(i,:), 'ZYX');
 
     yaw   = eul(1);
@@ -126,12 +135,12 @@ for i=1:500:length(t)
     % ht.Matrix = T * Rz * Ry * Rx;
 
     T = makehgtform('translate',TS_POS_I(i,:),'zrotate', yaw,'yrotate', pitch,'xrotate', roll);
-    ht.Matrix = T;
+    ht.Matrix = T*H_BS;
 
     R = quat2rotm(ts_q_b(i,:));
     ex = R * [1;0;0] * 2e+6;
-    ey = R * [0;1;0] * 2e+6;
-    ez = R * [0;0;1] * 2e+6; 
+    ey = R * [0;0;1] * 2e+6;
+    ez = R * [0;1;0] * 2e+6; 
     set(qx, 'XData', TS_POS_I(i,1), 'YData', TS_POS_I(i,2), 'ZData', TS_POS_I(i,3), ...
     'Udata',ex(1),'Vdata',ex(2),'Wdata',ex(3));
     set(qy, 'XData', TS_POS_I(i,1), 'YData', TS_POS_I(i,2), 'ZData', TS_POS_I(i,3), ...

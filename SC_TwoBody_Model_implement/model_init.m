@@ -34,7 +34,7 @@ SC_Ib = [1843.56  -0.0019  -803.89; % [kg m^2]
 norm_Ib = diag(diag(SC_Ib) / norm(diag(SC_Ib)));
 m_tot = 3300;%[kg]
 wb0 = [0 0 0]';
-ag0 = deg2rad([-5 5 -5]');
+ag0 = deg2rad([-8 5 -5]');
 qb0 = eul2quat(ag0','ZYX')';
 vI0 = [0 0 0]';
 pI0 = [0 0 0]';
@@ -46,7 +46,7 @@ TS_qb0 = angle2quat(deg2rad(0),deg2rad(0),deg2rad(0),'ZYX')';
 
 %% Reaction Wheel Configuration
 % Fly_Wheel_Mass = 12;%[kg]
-Iws = diag([1 1 1 1])*0.227;
+Iws = diag([1 1 1 1])*0.2274;
 RW_t_max = 0.5;
 RW_Omegad_max = RW_t_max;
 RW_Max_Speed = 4200*rpm2rad;
